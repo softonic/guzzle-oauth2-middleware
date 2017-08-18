@@ -52,6 +52,7 @@ $stack->push(\GuzzleHttp\Middleware::mapRequest($addAuthorizationHeader));
 
 $retryOnAuthorizationError = new \Softonic\OAuth2\Guzzle\Middleware\RetryOnAuthorizationError(
     $provider,
+    $config,
     $cacheHandler
 );
 
