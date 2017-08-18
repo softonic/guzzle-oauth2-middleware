@@ -18,7 +18,7 @@ class RetryOnAuthorizationErrorTest extends TestCase
             ->method('getStatusCode')
             ->willReturn(200);
 
-        $decider = new RetryOnAuthorizationError($mockProvider, $mockCacheHandler);
+        $decider = new RetryOnAuthorizationError($mockProvider, [], $mockCacheHandler);
         $this->assertFalse($decider(0, $mockRequest, $mockResponse));
     }
 
@@ -35,9 +35,9 @@ class RetryOnAuthorizationErrorTest extends TestCase
 
         $mockCacheHandler->expects($this->once())
             ->method('deleteItemByProvider')
-            ->with($mockProvider);
+            ->with($mockProvider, []);
 
-        $decider = new RetryOnAuthorizationError($mockProvider, $mockCacheHandler);
+        $decider = new RetryOnAuthorizationError($mockProvider, [], $mockCacheHandler);
         $this->assertTrue($decider(0, $mockRequest, $mockResponse));
         $this->assertFalse($decider(1, $mockRequest, $mockResponse));
     }

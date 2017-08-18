@@ -7,6 +7,65 @@ use Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler;
 
 class AccessTokenCacheHandlerTest extends TestCase
 {
+    public function testGetCacheKeyIsDifferentBetweenProviders()
+    {
+        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+
+        $options = [];
+        $providerA = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $providerA->expects($this->any())
+            ->method('getAccessToken')
+            ->willReturn('a');
+
+        $providerB = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $providerB->expects($this->any())
+            ->method('getAccessToken')
+            ->willReturn('b');
+
+        $cacheHandler = new AccessTokenCacheHandler($mockCache);
+        $this->assertNotEquals(
+            $cacheHandler->getCacheKey($providerA, $options),
+            $cacheHandler->getCacheKey($providerB, $options)
+        );
+    }
+
+    public function testGetCacheKeyIsEqualForSameProvider()
+    {
+        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+
+        $options = [];
+        $providerA = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $providerB = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+
+        $cacheHandler = new AccessTokenCacheHandler($mockCache);
+        $this->assertEquals(
+            $cacheHandler->getCacheKey($providerA, $options),
+            $cacheHandler->getCacheKey($providerB, $options)
+        );
+    }
+
+    public function testGetCacheKeyIsDifferentBetweenSameProviderButDifferentOptions()
+    {
+        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+
+        $optionsA = [
+            'grant_type' => 'client_credentials',
+            'scope' => 'myscopeA'
+        ];
+        $optionsB = [
+            'grant_type' => 'client_credentials',
+            'scope' => 'myscopeB',
+        ];
+
+        $provider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+
+        $cacheHandler = new AccessTokenCacheHandler($mockCache);
+        $this->assertNotEquals(
+            $cacheHandler->getCacheKey($provider, $optionsA),
+            $cacheHandler->getCacheKey($provider, $optionsB)
+        );
+    }
+
     public function testGetTokenByProviderWhenNotSet()
     {
         $mockProvider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
@@ -23,7 +82,7 @@ class AccessTokenCacheHandlerTest extends TestCase
             ->willReturn(false);
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
-        $this->assertFalse($cacheHandler->getTokenByprovider($mockProvider));
+        $this->assertFalse($cacheHandler->getTokenByprovider($mockProvider, []));
     }
 
     public function testGetTokenByProviderWhenSet()
@@ -46,7 +105,7 @@ class AccessTokenCacheHandlerTest extends TestCase
             ->willReturn('mytoken');
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
-        $this->assertSame('mytoken', $cacheHandler->getTokenByprovider($mockProvider));
+        $this->assertSame('mytoken', $cacheHandler->getTokenByprovider($mockProvider, []));
     }
 
     public function testSaveTokenByProvider()
@@ -85,7 +144,7 @@ class AccessTokenCacheHandlerTest extends TestCase
             );
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
-        $this->assertTrue($cacheHandler->saveTokenByProvider($mockAccessToken, $mockProvider));
+        $this->assertTrue($cacheHandler->saveTokenByProvider($mockAccessToken, $mockProvider, []));
     }
 
     public function testDeleteItemByProvider()
@@ -99,7 +158,7 @@ class AccessTokenCacheHandlerTest extends TestCase
             ->willReturn(true);
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
-        $this->assertTrue($cacheHandler->deleteItemByprovider($mockProvider));
+        $this->assertTrue($cacheHandler->deleteItemByprovider($mockProvider, []));
     }
 
     private function matchCacheKey()

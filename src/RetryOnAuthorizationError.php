@@ -9,11 +9,13 @@ use Psr\Http\Message\ResponseInterface;
 class RetryOnAuthorizationError
 {
     private $provider;
+    private $config;
     private $cacheHandler;
 
-    public function __construct(OAuth2Provider $provider, AccessTokenCacheHandler $cacheHandler)
+    public function __construct(OAuth2Provider $provider, array $config, AccessTokenCacheHandler $cacheHandler)
     {
         $this->provider = $provider;
+        $this->config = $config;
         $this->cacheHandler = $cacheHandler;
     }
 
@@ -25,7 +27,7 @@ class RetryOnAuthorizationError
     ): bool {
         $statusCode = $response->getStatusCode();
         if ($retries < 1 && $statusCode === 401) {
-            $this->cacheHandler->deleteItemByProvider($this->provider);
+            $this->cacheHandler->deleteItemByProvider($this->provider, $this->config);
             return true;
         }
         return false;

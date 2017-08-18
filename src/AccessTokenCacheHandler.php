@@ -18,9 +18,9 @@ class AccessTokenCacheHandler
     /**
      * @return string|bool False if no token can be found in cache, the token's value otherwise.
      */
-    public function getTokenByProvider(OAuth2Provider $provider)
+    public function getTokenByProvider(OAuth2Provider $provider, array $options)
     {
-        $cacheKey = $this->getCacheKey($provider);
+        $cacheKey = $this->getCacheKey($provider, $options);
         $cacheItem = $this->cache->getItem($cacheKey);
         if ($cacheItem->isHit()) {
             return $cacheItem->get();
@@ -28,9 +28,9 @@ class AccessTokenCacheHandler
         return false;
     }
 
-    public function saveTokenByProvider(AccessToken $accessToken, OAuth2Provider $provider): bool
+    public function saveTokenByProvider(AccessToken $accessToken, OAuth2Provider $provider, array $options): bool
     {
-        $cacheKey = $this->getCacheKey($provider);
+        $cacheKey = $this->getCacheKey($provider, $options);
         $cacheItem = $this->cache->getItem($cacheKey);
         $cacheItem->set(
             $accessToken->getToken()
@@ -43,13 +43,13 @@ class AccessTokenCacheHandler
         return $this->cache->save($cacheItem);
     }
 
-    public function deleteItemByProvider(OAuth2Provider $provider): bool
+    public function deleteItemByProvider(OAuth2Provider $provider, array $options): bool
     {
-        return $this->cache->deleteItem($this->getCacheKey($provider));
+        return $this->cache->deleteItem($this->getCacheKey($provider, $options));
     }
 
-    private function getCacheKey(OAuth2Provider $provider): string
+    public function getCacheKey(OAuth2Provider $provider, array $options): string
     {
-        return static::CACHE_KEY_PREFIX . md5(print_r($provider, true));
+        return static::CACHE_KEY_PREFIX . md5(print_r($provider, true) . serialize($options));
     }
 }
