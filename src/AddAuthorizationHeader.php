@@ -23,11 +23,11 @@ class AddAuthorizationHeader
 
     public function __invoke(RequestInterface $request): RequestInterface
     {
-        $token = $this->cacheHandler->getTokenByProvider($this->provider);
+        $token = $this->cacheHandler->getTokenByProvider($this->provider, $this->config);
         if (false === $token) {
             $accessToken = $this->getAccessToken();
             $token = $accessToken->getToken();
-            $this->cacheHandler->saveTokenByProvider($accessToken, $this->provider);
+            $this->cacheHandler->saveTokenByProvider($accessToken, $this->provider, $this->config);
         }
 
         return $request->withHeader('Authorization', 'Bearer ' . $token);

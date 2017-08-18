@@ -23,7 +23,7 @@ class AddAuthorizationHeaderTest extends TestCase
 
         $mockCacheHandler->expects($this->once())
             ->method('getTokenByProvider')
-            ->with($this->mockOauth2Provider)
+            ->with($this->mockOauth2Provider, [])
             ->willReturn(false);
 
         $addAuthorizationHeader = new AddAuthorizationHeader(
@@ -77,6 +77,11 @@ class AddAuthorizationHeaderTest extends TestCase
         $mockRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
         $mockCacheHandler = $this->createMock(\Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler::class);
 
+        $config = [
+            'grant_type' => 'client_credentials',
+            'scope' => 'myscope',
+        ];
+
         $this->mockAccessToken->expects($this->once())
             ->method('getToken')
             ->willReturn('mytoken');
@@ -89,7 +94,8 @@ class AddAuthorizationHeaderTest extends TestCase
             ->method('saveTokenByProvider')
             ->with(
                 $this->mockAccessToken,
-                $this->mockOauth2Provider
+                $this->mockOauth2Provider,
+                $config
             );
 
         $this->mockOauth2Provider->expects($this->once())
@@ -105,11 +111,6 @@ class AddAuthorizationHeaderTest extends TestCase
             ->with('Authorization', 'Bearer mytoken')
             ->willReturnSelf();
 
-        $config = [
-            'grant_type' => 'client_credentials',
-            'scope' => 'myscope',
-        ];
-
         $addAuthorizationHeader = new AddAuthorizationHeader(
             $this->mockOauth2Provider,
             $config,
@@ -124,6 +125,9 @@ class AddAuthorizationHeaderTest extends TestCase
     {
         $mockRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
         $mockCacheHandler = $this->createMock(\Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler::class);
+        $config = [
+            'grant_type' => 'client_credentials',
+        ];
 
         $this->mockAccessToken->expects($this->once())
             ->method('getToken')
@@ -131,13 +135,17 @@ class AddAuthorizationHeaderTest extends TestCase
 
         $mockCacheHandler->expects($this->once())
             ->method('getTokenByProvider')
-            ->with($this->mockOauth2Provider)
+            ->with(
+                $this->mockOauth2Provider,
+                $config
+            )
             ->willReturn(false);
         $mockCacheHandler->expects($this->once())
             ->method('saveTokenByProvider')
             ->with(
                 $this->mockAccessToken,
-                $this->mockOauth2Provider
+                $this->mockOauth2Provider,
+                $config
             );
 
         $mockRequest->expects($this->once())
@@ -152,10 +160,6 @@ class AddAuthorizationHeaderTest extends TestCase
                 []
             )
             ->willReturn($this->mockAccessToken);
-
-        $config = [
-            'grant_type' => 'client_credentials',
-        ];
 
         $addAuthorizationHeader = new AddAuthorizationHeader(
             $this->mockOauth2Provider,
@@ -172,9 +176,16 @@ class AddAuthorizationHeaderTest extends TestCase
         $mockRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
         $mockCacheHandler = $this->createMock(\Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler::class);
 
+        $config = [
+            'grant_type' => 'client_credentials',
+        ];
+
         $mockCacheHandler->expects($this->once())
             ->method('getTokenByProvider')
-            ->with($this->mockOauth2Provider)
+            ->with(
+                $this->mockOauth2Provider,
+                $config
+            )
             ->willReturn('mytoken');
         $mockCacheHandler->expects($this->never())
             ->method('saveTokenByProvider');
@@ -186,10 +197,6 @@ class AddAuthorizationHeaderTest extends TestCase
 
         $this->mockOauth2Provider->expects($this->never())
             ->method('getAccessToken');
-
-        $config = [
-            'grant_type' => 'client_credentials',
-        ];
 
         $addAuthorizationHeader = new AddAuthorizationHeader(
             $this->mockOauth2Provider,
