@@ -29,7 +29,7 @@ class RetryOnAuthorizationErrorTest extends TestCase
         $mockProvider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
         $mockCacheHandler = $this->createMock(\Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler::class);
 
-        $mockResponse->expects($this->exactly(2))
+        $mockResponse->expects($this->exactly(1))
             ->method('getStatusCode')
             ->willReturn(401);
 
