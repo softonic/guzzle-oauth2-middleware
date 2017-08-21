@@ -10,6 +10,8 @@ class AccessTokenCacheHandler
 {
     const CACHE_KEY_PREFIX = 'oauth2-token-';
 
+    private $cache;
+
     public function __construct(CacheItemPoolInterface $cache)
     {
         $this->cache = $cache;
