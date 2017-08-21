@@ -36,30 +36,14 @@ $config = ['grant_type' => 'client_credentials', 'scope' => 'myscope'];
 
 // Any implementation of PSR-6 Cache will do
 $cache = new \Symfony\Component\Cache\Adapter\FilesystemAdapter();
-$cacheHandler = new \Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler($cache);
 
-
-$stack = new \GuzzleHttp\HandlerStack();
-$stack->setHandler(new \GuzzleHttp\Handler\CurlHandler());
-
-$addAuthorizationHeader = new \Softonic\OAuth2\Guzzle\Middleware\AddAuthorizationHeader(
+$client = \Softonic\OAuth2\Guzzle\Middleware\ClientBuilder::build(
     $provider,
     $config,
-    $cacheHandler
+    $cache,
+    ['base_uri' => 'https://foo.bar/']
 );
-
-$stack->push(\GuzzleHttp\Middleware::mapRequest($addAuthorizationHeader));
-
-$retryOnAuthorizationError = new \Softonic\OAuth2\Guzzle\Middleware\RetryOnAuthorizationError(
-    $provider,
-    $cacheHandler
-);
-
-$stack->push(\GuzzleHttp\Middleware::retry($retryOnAuthorizationError));
-
-$client = new \GuzzleHttp\Client(['handler' => $stack]);
-
-$response = $client->request('POST', 'https://foo.bar/endpoint');
+$response = $client->request('POST', 'qux);
 
 
 ```
