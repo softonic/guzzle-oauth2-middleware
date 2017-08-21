@@ -39,14 +39,14 @@ class ClientBuilder
         return new \GuzzleHttp\Client($guzzleOptions);
     }
 
-    private static function getStack(): Stack
+    protected static function getStack(): Stack
     {
         $stack = new Stack();
         $stack->setHandler(new \GuzzleHttp\Handler\CurlHandler());
         return $stack;
     }
 
-    private static function addHeaderMiddlewareToStack(
+    protected static function addHeaderMiddlewareToStack(
         Stack $stack,
         OAuth2Provider $oauthProvider,
         array $tokenOptions,
@@ -62,7 +62,7 @@ class ClientBuilder
         return $stack;
     }
 
-    private static function addRetryMiddlewareToStack(
+    protected static function addRetryMiddlewareToStack(
         Stack $stack,
         OAuth2Provider $oauthProvider,
         array $tokenOptions,
@@ -78,7 +78,7 @@ class ClientBuilder
         return $stack;
     }
 
-    private static function mergeOptions(array $defaultOptions, array $options = null): array
+    protected static function mergeOptions(array $defaultOptions, array $options = null): array
     {
         $options = $options ?? [];
         return array_merge($options, $defaultOptions);
