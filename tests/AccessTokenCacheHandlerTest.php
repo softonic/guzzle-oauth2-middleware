@@ -50,7 +50,7 @@ class AccessTokenCacheHandlerTest extends TestCase
 
         $optionsA = [
             'grant_type' => 'client_credentials',
-            'scope' => 'myscopeA'
+            'scope' => 'myscopeA',
         ];
         $optionsB = [
             'grant_type' => 'client_credentials',
