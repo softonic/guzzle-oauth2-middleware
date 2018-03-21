@@ -34,6 +34,6 @@ class RetryOnAuthorizationError
 
     private function isUnauthorizedResponse(int $retries, ResponseInterface $response = null)
     {
-        return !empty($response) && $retries < 1 && $response->getStatusCode() === 401;
+        return !empty($response) && $retries < 1 && in_array($response->getStatusCode(), [401,403]);
     }
 }

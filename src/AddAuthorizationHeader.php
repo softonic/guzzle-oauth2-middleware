@@ -35,9 +35,8 @@ class AddAuthorizationHeader
 
     private function getAccessToken(): AccessToken
     {
-        $options = $this->getOptions();
         $grantType = $this->getGrantType();
-        return $this->provider->getAccessToken($grantType, $options);
+        return $this->provider->getAccessToken($grantType, $this->config);
     }
 
     private function getGrantType(): string
@@ -46,14 +45,5 @@ class AddAuthorizationHeader
             throw new \InvalidArgumentException('Config value `grant_type` needs to be specified.');
         }
         return $this->config['grant_type'];
-    }
-
-    private function getOptions(): array
-    {
-        $options = [];
-        if (!empty($this->config['scope'])) {
-            $options['scope'] = $this->config['scope'];
-        }
-        return $options;
     }
 }

@@ -52,6 +52,6 @@ class AccessTokenCacheHandler
 
     public function getCacheKey(OAuth2Provider $provider, array $options): string
     {
-        return static::CACHE_KEY_PREFIX . md5(print_r($provider, true) . serialize($options));
+        return static::CACHE_KEY_PREFIX . md5(get_class($provider) . serialize($options));
     }
 }
