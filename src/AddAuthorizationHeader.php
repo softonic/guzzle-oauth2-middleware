@@ -2,8 +2,9 @@
 
 namespace Softonic\OAuth2\Guzzle\Middleware;
 
+use InvalidArgumentException;
 use League\OAuth2\Client\Provider\AbstractProvider as OAuth2Provider;
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Psr\Http\Message\RequestInterface;
 
 class AddAuthorizationHeader
@@ -33,7 +34,7 @@ class AddAuthorizationHeader
         return $request->withHeader('Authorization', 'Bearer ' . $token);
     }
 
-    private function getAccessToken(): AccessToken
+    private function getAccessToken(): AccessTokenInterface
     {
         $options = $this->getOptions();
         $grantType = $this->getGrantType();
@@ -43,7 +44,7 @@ class AddAuthorizationHeader
     private function getGrantType(): string
     {
         if (empty($this->config['grant_type'])) {
-            throw new \InvalidArgumentException('Config value `grant_type` needs to be specified.');
+            throw new InvalidArgumentException('Config value `grant_type` needs to be specified.');
         }
         return $this->config['grant_type'];
     }
