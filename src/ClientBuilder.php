@@ -2,7 +2,10 @@
 
 namespace Softonic\OAuth2\Guzzle\Middleware;
 
-use GuzzleHttp\HandlerStack as Stack;
+use GuzzleHttp\Client;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use League\OAuth2\Client\Provider\AbstractProvider as OAuth2Provider;
 use Psr\Cache\CacheItemPoolInterface as Cache;
 
@@ -13,10 +16,12 @@ class ClientBuilder
         array $tokenOptions,
         Cache $cache,
         array $guzzleOptions = null
-    ): \GuzzleHttp\Client {
+    ): Client {
         $cacheHandler = new AccessTokenCacheHandler($cache);
 
-        $stack = static::getStack();
+        $stack = $guzzleOptions['handler'] ?? HandlerStack::create();
+
+        $stack->setHandler(new CurlHandler());
 
         $stack = static::addHeaderMiddlewareToStack(
             $stack,
@@ -36,45 +41,38 @@ class ClientBuilder
         ];
         $guzzleOptions = static::mergeOptions($defaultOptions, $guzzleOptions);
 
-        return new \GuzzleHttp\Client($guzzleOptions);
-    }
-
-    protected static function getStack(): Stack
-    {
-        $stack = new Stack();
-        $stack->setHandler(new \GuzzleHttp\Handler\CurlHandler());
-        return $stack;
+        return new Client($guzzleOptions);
     }
 
     protected static function addHeaderMiddlewareToStack(
-        Stack $stack,
+        HandlerStack $stack,
         OAuth2Provider $oauthProvider,
         array $tokenOptions,
         AccessTokenCacheHandler $cacheHandler
-    ): Stack {
+    ): HandlerStack {
         $addAuthorizationHeader = new AddAuthorizationHeader(
             $oauthProvider,
             $tokenOptions,
             $cacheHandler
         );
 
-        $stack->push(\GuzzleHttp\Middleware::mapRequest($addAuthorizationHeader));
+        $stack->push(Middleware::mapRequest($addAuthorizationHeader));
         return $stack;
     }
 
     protected static function addRetryMiddlewareToStack(
-        Stack $stack,
+        HandlerStack $stack,
         OAuth2Provider $oauthProvider,
         array $tokenOptions,
         AccessTokenCacheHandler $cacheHandler
-    ): Stack {
+    ): HandlerStack {
         $retryOnAuthorizationError = new RetryOnAuthorizationError(
             $oauthProvider,
             $tokenOptions,
             $cacheHandler
         );
 
-        $stack->push(\GuzzleHttp\Middleware::retry($retryOnAuthorizationError));
+        $stack->push(Middleware::retry($retryOnAuthorizationError));
         return $stack;
     }
 

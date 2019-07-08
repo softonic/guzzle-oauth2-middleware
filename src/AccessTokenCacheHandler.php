@@ -5,6 +5,7 @@ namespace Softonic\OAuth2\Guzzle\Middleware;
 use League\OAuth2\Client\Provider\AbstractProvider as OAuth2Provider;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Cache\CacheItemPoolInterface;
+use Psr\Cache\InvalidArgumentException;
 
 class AccessTokenCacheHandler
 {
@@ -18,6 +19,11 @@ class AccessTokenCacheHandler
     }
 
     /**
+     * @param OAuth2Provider $provider
+     * @param array          $options
+     *
+     * @throws InvalidArgumentException
+     *
      * @return string|bool False if no token can be found in cache, the token's value otherwise.
      */
     public function getTokenByProvider(OAuth2Provider $provider, array $options)
