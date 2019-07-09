@@ -4,7 +4,7 @@ namespace Softonic\OAuth2\Guzzle\Middleware;
 
 use InvalidArgumentException;
 use League\OAuth2\Client\Provider\AbstractProvider as OAuth2Provider;
-use League\OAuth2\Client\Token\AccessTokenInterface;
+use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\RequestInterface;
 
 class AddAuthorizationHeader
@@ -34,7 +34,7 @@ class AddAuthorizationHeader
         return $request->withHeader('Authorization', 'Bearer ' . $token);
     }
 
-    private function getAccessToken(): AccessTokenInterface
+    private function getAccessToken(): AccessToken
     {
         $options = $this->getOptions();
         $grantType = $this->getGrantType();
