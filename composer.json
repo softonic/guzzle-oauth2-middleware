@@ -9,7 +9,7 @@
     "issues": "https://github.com/softonic/guzzle-oauth2-middleware/issues"
   },
   "require": {
-    "php": ">=7.1",
+    "php": ">=7.0",
     "league/oauth2-client": "^2.2",
     "psr/cache": "^1.0"
   },
