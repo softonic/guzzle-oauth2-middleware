@@ -7,20 +7,20 @@ use Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler;
 
 class AccessTokenCacheHandlerTest extends TestCase
 {
-    public function testGetCacheKeyIsDifferentBetweenProviders()
+    public function testGetCacheKeyIsDifferentBetweenOauthClients()
     {
         $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
 
         $options = [];
         $providerA = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
         $providerA->expects($this->any())
-            ->method('getAccessToken')
-            ->willReturn('a');
+            ->method('getAuthorizationUrl')
+            ->willReturn('http://example.com?client_id=a');
 
         $providerB = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
         $providerB->expects($this->any())
             ->method('getAccessToken')
-            ->willReturn('b');
+            ->willReturn('http://example.com?client_id=b');
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
         $this->assertNotEquals(
