@@ -7,8 +7,8 @@ Guzzle OAuth2 Middleware
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/softonic/guzzle-oauth2-middleware.svg?style=flat-square)](https://scrutinizer-ci.com/g/softonic/guzzle-oauth2-middleware/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/softonic/guzzle-oauth2-middleware.svg?style=flat-square)](https://scrutinizer-ci.com/g/softonic/guzzle-oauth2-middleware)
 [![Total Downloads](https://img.shields.io/packagist/dt/softonic/guzzle-oauth2-middleware.svg?style=flat-square)](https://packagist.org/packages/softonic/guzzle-oauth2-middleware)
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/softonic/guzzle-oauth2-middleware.svg)](http://isitmaintained.com/project/softonic/guzzle-oauth2-middleware "Average time to resolve an issue")
-[![Percentage of issues still open](http://isitmaintained.com/badge/open/softonic/guzzle-oauth2-middleware.svg)](http://isitmaintained.com/project/softonic/guzzle-oauth2-middleware "Percentage of issues still open")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/softonic/guzzle-oauth2-middleware.svg?style=flat-square)](http://isitmaintained.com/project/softonic/guzzle-oauth2-middleware "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/softonic/guzzle-oauth2-middleware.svg?style=flat-square)](http://isitmaintained.com/project/softonic/guzzle-oauth2-middleware "Percentage of issues still open")
 
 This package provides middleware for [guzzle](https://github.com/guzzle/guzzle/) for handling OAuth2 token negotiation and renewal on expiry transparently. It accecpts PHP League's [OAuth 2.0 Clients](https://github.com/thephpleague/oauth2-client).
 
