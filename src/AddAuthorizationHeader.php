@@ -55,6 +55,14 @@ class AddAuthorizationHeader
         if (!empty($this->config['scope'])) {
             $options['scope'] = $this->config['scope'];
         }
+      
+        if (!empty($this->config['token_options'])) {
+            $token_options = $this->config['token_options'];
+            foreach ($token_options as $key => $value) {
+                $options[$key] = $value;
+            }
+        }
+
         return $options;
     }
 }
