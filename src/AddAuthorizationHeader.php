@@ -57,8 +57,8 @@ class AddAuthorizationHeader
         }
       
         if (!empty($this->config['token_options'])) {
-            $token_options = $this->config['token_options'];
-            foreach ($token_options as $key => $value) {
+            $tokenOptions = $this->config['token_options'];
+            foreach ($tokenOptions as $key => $value) {
                 $options[$key] = $value;
             }
         }
