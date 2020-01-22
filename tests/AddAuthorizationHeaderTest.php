@@ -221,6 +221,56 @@ class AddAuthorizationHeaderTest extends TestCase
         $this->assertSame($mockRequest, $request);
     }
 
+    public function testMiddlewareAddingAuthorizationHeaderWithTokenOptionsDeclaringScope()
+    {
+        $mockRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
+        $mockCacheHandler = $this->createMock(\Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler::class);
+
+        $config = [
+            'grant_type' => 'client_credentials',
+            'scope' => 'ignoredscope',
+            'token_options' => ['audience' => 'test_audience', 'scope' => 'myscope'],
+        ];
+
+        $this->mockAccessToken->expects($this->once())
+            ->method('getToken')
+            ->willReturn('mytoken');
+
+        $mockCacheHandler->expects($this->once())
+            ->method('getTokenByProvider')
+            ->with($this->mockOauth2Provider)
+            ->willReturn(false);
+        $mockCacheHandler->expects($this->once())
+            ->method('saveTokenByProvider')
+            ->with(
+                $this->mockAccessToken,
+                $this->mockOauth2Provider,
+                $config
+            );
+
+        $this->mockOauth2Provider->expects($this->once())
+            ->method('getAccessToken')
+            ->with(
+                'client_credentials',
+                ['scope' => 'myscope', 'audience' => 'test_audience']
+            )
+            ->willReturn($this->mockAccessToken);
+
+        $mockRequest->expects($this->once())
+            ->method('withHeader')
+            ->with('Authorization', 'Bearer mytoken')
+            ->willReturnSelf();
+
+        $addAuthorizationHeader = new AddAuthorizationHeader(
+            $this->mockOauth2Provider,
+            $config,
+            $mockCacheHandler
+        );
+        $request = $addAuthorizationHeader($mockRequest);
+
+        $this->assertSame($mockRequest, $request);
+    }
+
     public function testMiddlewareNotNegotiatingTokenWhenIsCached()
     {
         $mockRequest = $this->createMock(\Psr\Http\Message\RequestInterface::class);
