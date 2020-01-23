@@ -34,7 +34,8 @@ $options = [
 // Any provider extending League\OAuth2\Client\Provider\AbstractProvider will do
 $provider = new Softonic\OAuth2\Client\Provider\Softonic($options);
 
-$config = ['grant_type' => 'client_credentials', 'scope' => 'myscope'];
+// Send OAuth2 parameters and use token_options for any other parameters your OAuth2 provider needs
+$config = ['grant_type' => 'client_credentials', 'scope' => 'myscope', 'token_options' => ['audience' => 'test_audience']];
 
 // Any implementation of PSR-6 Cache will do
 $cache = new \Symfony\Component\Cache\Adapter\FilesystemAdapter();
