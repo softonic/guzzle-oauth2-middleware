@@ -27,6 +27,7 @@ install:
   - travis_retry composer update --no-interaction --prefer-source
 
 script:
+  - export XDEBUG_MODE=coverage
   - composer phpunit
 
 after_script:

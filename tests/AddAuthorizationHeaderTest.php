@@ -106,6 +106,11 @@ class AddAuthorizationHeaderTest extends TestCase
             )
             ->willReturn($this->mockAccessToken);
 
+        $this->mockOauth2Provider->expects($this->once())
+            ->method('getHeaders')
+            ->with('mytoken')
+            ->willReturn(['Authorization' => 'Bearer mytoken']);
+
         $mockRequest->expects($this->once())
             ->method('withHeader')
             ->with('Authorization', 'Bearer mytoken')
@@ -132,6 +137,11 @@ class AddAuthorizationHeaderTest extends TestCase
         $this->mockAccessToken->expects($this->once())
             ->method('getToken')
             ->willReturn('mytoken');
+
+        $this->mockOauth2Provider->expects($this->once())
+            ->method('getHeaders')
+            ->with('mytoken')
+            ->willReturn(['Authorization' => 'Bearer mytoken']);
 
         $mockCacheHandler->expects($this->once())
             ->method('getTokenByProvider')
@@ -186,6 +196,11 @@ class AddAuthorizationHeaderTest extends TestCase
             ->method('getToken')
             ->willReturn('mytoken');
 
+        $this->mockOauth2Provider->expects($this->once())
+            ->method('getHeaders')
+            ->with('mytoken')
+            ->willReturn(['Authorization' => 'Bearer mytoken']);
+
         $mockCacheHandler->expects($this->once())
             ->method('getTokenByProvider')
             ->with($this->mockOauth2Provider)
@@ -235,6 +250,11 @@ class AddAuthorizationHeaderTest extends TestCase
         $this->mockAccessToken->expects($this->once())
             ->method('getToken')
             ->willReturn('mytoken');
+
+        $this->mockOauth2Provider->expects($this->once())
+            ->method('getHeaders')
+            ->with('mytoken')
+            ->willReturn(['Authorization' => 'Bearer mytoken']);
 
         $mockCacheHandler->expects($this->once())
             ->method('getTokenByProvider')
@@ -294,6 +314,11 @@ class AddAuthorizationHeaderTest extends TestCase
             ->method('withHeader')
             ->with('Authorization', 'Bearer mytoken')
             ->willReturnSelf();
+
+        $this->mockOauth2Provider->expects($this->once())
+            ->method('getHeaders')
+            ->with('mytoken')
+            ->willReturn(['Authorization' => 'Bearer mytoken']);
 
         $this->mockOauth2Provider->expects($this->never())
             ->method('getAccessToken');

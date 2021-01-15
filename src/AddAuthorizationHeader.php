@@ -31,7 +31,11 @@ class AddAuthorizationHeader
             $this->cacheHandler->saveTokenByProvider($accessToken, $this->provider, $this->config);
         }
 
-        return $request->withHeader('Authorization', 'Bearer ' . $token);
+        foreach ($this->provider->getHeaders($token) as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+
+        return $request;
     }
 
     private function getAccessToken(): AccessToken
