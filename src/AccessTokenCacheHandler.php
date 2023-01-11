@@ -9,7 +9,7 @@ use Psr\Cache\InvalidArgumentException;
 
 class AccessTokenCacheHandler
 {
-    const CACHE_KEY_PREFIX = 'oauth2-token-';
+    const CACHE_KEY_PREFIX = 'oauth2_token_';
 
     private $cache;
 
