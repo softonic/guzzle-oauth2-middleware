@@ -15,7 +15,7 @@ class ClientBuilder
         OAuth2Provider $oauthProvider,
         array $tokenOptions,
         Cache $cache,
-        array $guzzleOptions = null
+        ?array $guzzleOptions = null
     ): Client {
         $cacheHandler = new AccessTokenCacheHandler($cache);
 
@@ -76,7 +76,7 @@ class ClientBuilder
         return $stack;
     }
 
-    protected static function mergeOptions(array $defaultOptions, array $options = null): array
+    protected static function mergeOptions(array $defaultOptions, ?array $options = null): array
     {
         $options = $options ?? [];
         return array_merge($options, $defaultOptions);
