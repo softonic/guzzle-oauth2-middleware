@@ -2,22 +2,27 @@
 
 namespace Softonic\OAuth2\Guzzle\Middleware\Test;
 
+use DateTime;
+use League\OAuth2\Client\Provider\AbstractProvider;
+use League\OAuth2\Client\Token\AccessToken;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\CacheItemInterface;
+use Psr\Cache\CacheItemPoolInterface;
 use Softonic\OAuth2\Guzzle\Middleware\AccessTokenCacheHandler;
 
 class AccessTokenCacheHandlerTest extends TestCase
 {
     public function testGetCacheKeyIsDifferentBetweenOauthClients()
     {
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
 
         $options = [];
-        $providerA = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $providerA = $this->createMock(AbstractProvider::class);
         $providerA->expects($this->any())
             ->method('getAuthorizationUrl')
             ->willReturn('http://example.com?client_id=a');
 
-        $providerB = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $providerB = $this->createMock(AbstractProvider::class);
         $providerB->expects($this->any())
             ->method('getAccessToken')
             ->willReturn('http://example.com?client_id=b');
@@ -31,11 +36,11 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     public function testGetCacheKeyIsEqualForSameProvider()
     {
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
 
         $options = [];
-        $providerA = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
-        $providerB = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $providerA = $this->createMock(AbstractProvider::class);
+        $providerB = $this->createMock(AbstractProvider::class);
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
         $this->assertEquals(
@@ -46,7 +51,7 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     public function testGetCacheKeyIsDifferentBetweenSameProviderButDifferentOptions()
     {
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
 
         $optionsA = [
             'grant_type' => 'client_credentials',
@@ -57,7 +62,7 @@ class AccessTokenCacheHandlerTest extends TestCase
             'scope' => 'myscopeB',
         ];
 
-        $provider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
+        $provider = $this->createMock(AbstractProvider::class);
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
         $this->assertNotEquals(
@@ -68,9 +73,9 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     public function testGetTokenByProviderWhenNotSet()
     {
-        $mockProvider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
-        $mockCacheItem = $this->createMock(\Psr\Cache\CacheItemInterface::class);
+        $mockProvider = $this->createMock(AbstractProvider::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
+        $mockCacheItem = $this->createMock(CacheItemInterface::class);
 
         $mockCache->expects($this->once())
             ->method('getItem')
@@ -87,9 +92,9 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     public function testGetTokenByProviderWhenSet()
     {
-        $mockProvider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
-        $mockCacheItem = $this->createMock(\Psr\Cache\CacheItemInterface::class);
+        $mockProvider = $this->createMock(AbstractProvider::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
+        $mockCacheItem = $this->createMock(CacheItemInterface::class);
 
         $mockCache->expects($this->once())
             ->method('getItem')
@@ -110,10 +115,10 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     public function testSaveTokenByProvider()
     {
-        $mockProvider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
-        $mockCacheItem = $this->createMock(\Psr\Cache\CacheItemInterface::class);
-        $mockAccessToken = $this->createMock(\League\OAuth2\Client\Token\AccessToken::class);
+        $mockProvider = $this->createMock(AbstractProvider::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
+        $mockCacheItem = $this->createMock(CacheItemInterface::class);
+        $mockAccessToken = $this->createMock(AccessToken::class);
 
         $expiryTimestamp = 1498146237;
         $mockAccessToken->expects($this->once())
@@ -140,7 +145,7 @@ class AccessTokenCacheHandlerTest extends TestCase
         $mockCacheItem->expects($this->once())
             ->method('expiresAt')
             ->with(
-                $this->isInstanceOf(\DateTime::class)
+                $this->isInstanceOf(DateTime::class)
             );
 
         $cacheHandler = new AccessTokenCacheHandler($mockCache);
@@ -149,8 +154,8 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     public function testDeleteItemByProvider()
     {
-        $mockProvider = $this->createMock(\League\OAuth2\Client\Provider\AbstractProvider::class);
-        $mockCache = $this->createMock(\Psr\Cache\CacheItemPoolInterface::class);
+        $mockProvider = $this->createMock(AbstractProvider::class);
+        $mockCache = $this->createMock(CacheItemPoolInterface::class);
 
         $mockCache->expects($this->once())
             ->method('deleteItem')
@@ -163,6 +168,6 @@ class AccessTokenCacheHandlerTest extends TestCase
 
     private function matchCacheKey()
     {
-        return $this->matchesRegularExpression('/^oauth2-token-[a-f0-9]{32}$/');
+        return $this->matchesRegularExpression('/^oauth2_token_[a-f0-9]{32}$/');
     }
 }
